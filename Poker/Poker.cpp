@@ -4,6 +4,7 @@ int main()
 {
     cout << "Hello World!" << endl;
     cout << "Jebać disa!";
+    cout << "Kocham disa";
 }
 
 
