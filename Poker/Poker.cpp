@@ -6,6 +6,7 @@ using namespace std;
 int main()
 {
     cout << "Hello World!" << endl;
+    cout << "Jebać disa!";
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
