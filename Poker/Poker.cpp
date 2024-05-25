@@ -61,7 +61,7 @@ int sprawdzam(int x) {
 int main()
 {
 	cout << "Witaj w grze Poker!" << endl << "Wybierz opcję: " << endl << "1) Rozpocznij partię" << endl << "2) Wyjdź z gry" << endl;
-	string placeholder[2] = {"", ""};
+	string placeholder[2] = {"karta1", "karta2"};
 	int tytul_input = 0;
 	cin >> tytul_input;
 	if (tytul_input == 1) {
@@ -102,7 +102,8 @@ int main()
 		for (const auto& bot : listabotow) {
 			cout << bot.id << endl;
 			cout << bot.kapital << endl;
-			cout << bot.karty << endl;
+			cout << bot.karty[0] << endl;
+			cout << bot.karty[1] << endl;
 			cout << bot.stawka << endl;
 			cout << bot.dealer << endl;
 			cout << bot.status << endl;
