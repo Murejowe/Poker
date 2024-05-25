@@ -6,30 +6,27 @@ class Gracz {
 	public:
 		int id;
 		int kapital;
-		string karty;
+		string karty[2] = {"", ""};
 		int stawka;
 		bool dealer;
 		string status;
-		Gracz(int id, int kapital, string karty, int stawka, bool dealer, string status) {
-			this->id = id;
-			this->kapital = kapital;
-			this->karty = karty;
-			this->stawka = stawka;
-			this->dealer = dealer;
-			this->status = status;
+		Gracz(int id, int kapital, string karty[2], int stawka, bool dealer, string status) : id(id), kapital(kapital), stawka(stawka), dealer(dealer), status(status) {
+			this->karty[0] = karty[0];
+			this->karty[1] = karty[1];
 		}
 };
 
 class Czlowiek : public Gracz{
 	public:
-		Czlowiek(int id, int kapital, string karty, int stawka, bool dealer, string status) : Gracz(id, kapital, karty, stawka, dealer, status) {}
+		Czlowiek(int id, int kapital, string karty[2], int stawka, bool dealer, string status) : Gracz(id, kapital, karty, stawka, dealer, status) {}
 };
 
 class Bot : public Gracz{
 	private:
-		int  poziom_trudnosci;
+		// int  poziom_trudnosci;
 	public:
-		Bot(int id, int kapital, string karty, int stawka, bool dealer, string status, int poziom_trudnosci) : Gracz(id, kapital, karty, stawka, dealer, status), poziom_trudnosci(poziom_trudnosci){}
+		int  poziom_trudnosci;
+		Bot(int id, int kapital, string karty[2], int stawka, bool dealer, string status, int poziom_trudnosci) : Gracz(id, kapital, karty, stawka, dealer, status), poziom_trudnosci(poziom_trudnosci){}
 };
 class Gra{
 	protected:
@@ -64,6 +61,7 @@ int sprawdzam(int x) {
 int main()
 {
 	cout << "Witaj w grze Poker!" << endl << "Wybierz opcję: " << endl << "1) Rozpocznij partię" << endl << "2) Wyjdź z gry" << endl;
+	string placeholder[2] = {"", ""};
 	int tytul_input = 0;
 	cin >> tytul_input;
 	if (tytul_input == 1) {
@@ -95,7 +93,21 @@ int main()
 			cout << "Wprowadzono niepoprawną wartość! " << endl << "Podaj kapitał początkowy każdego gracza (min. 100): " << endl;
 			cin >> kapital;
 		}
-
+		vector<Bot> listabotow;
+		Czlowiek czlowiek(0, kapital, placeholder, 0, 0, "");
+		for (int i = 0; i < liczba_graczy; i++) {
+			Bot bot(i + 1, kapital, placeholder, 0, 0, "status", list[i]);
+			listabotow.push_back(bot);
+		}
+		for (const auto& bot : listabotow) {
+			cout << bot.id << endl;
+			cout << bot.kapital << endl;
+			cout << bot.karty << endl;
+			cout << bot.stawka << endl;
+			cout << bot.dealer << endl;
+			cout << bot.status << endl;
+			cout << bot.poziom_trudnosci << endl << endl;
+		}
 	}
 	else if(tytul_input == 2){
 		return 0;
