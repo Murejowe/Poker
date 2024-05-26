@@ -41,12 +41,12 @@ protected:
         "As Pik", "2 Pik", "3 Pik", "4 Pik", "5 Pik", "6 Pik", "7 Pik", "8 Pik", "9 Pik", "10 Pik", "Walet Pik", "Dama Pik", "Król Pik"
     };
 public:
-    string stol;
+    string stol[5];
     int pula;
     Gra() {
         ResetTalia();
     }
-    void RozdajKarty(vector<Gracz*>& gracze);
+    void RozdajKarty(vector<Gracz*>& gracze, Gra* gra);
     void TworzGraczy();
     int SetDealer();
     void RozpocznijRunde();
@@ -63,7 +63,7 @@ void Gra::ResetTalia() {
     shuffle(talia.begin(), talia.end(), default_random_engine(seed));
 }
 
-void Gra::RozdajKarty(vector<Gracz*>& gracze) {
+void Gra::RozdajKarty(vector<Gracz*>& gracze, Gra* gra) {
     if (talia.size() < gracze.size() * 2) {
         cout << "Not enough cards in the deck to deal!" << endl;
         return;
@@ -72,6 +72,10 @@ void Gra::RozdajKarty(vector<Gracz*>& gracze) {
     for (auto& gracz : gracze) {
         gracz->karty[0] = talia.back(); talia.pop_back();
         gracz->karty[1] = talia.back(); talia.pop_back();
+    }
+    for (int i = 0; i < 5; i++) {
+        gra -> stol[i] = talia.back();
+        talia.pop_back();
     }
 }
 
@@ -130,7 +134,7 @@ int main() {
 
             Gra gra;
             gra.ResetTalia();
-            gra.RozdajKarty(gracze);
+            gra.RozdajKarty(gracze, &gra);
             cout << "Czlowiek Karty: " << czlowiek.karty[0] << " i " << czlowiek.karty[1] << endl;
             for (const auto& bot : listabotow) {
                 cout << "Bot ID: " << bot.id << endl;
@@ -140,6 +144,9 @@ int main() {
                 cout << "Dealer: " << bot.dealer << endl;
                 cout << "Status: " << bot.status << endl;
                 cout << "Poziom Trudnosci: " << bot.poziom_trudnosci << endl << endl;
+            }
+            for (int i = 0; i < 5; i++) {
+                cout << gra.stol[i] << endl;
             }
         }
         else if (tytul_input == 2) {
