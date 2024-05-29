@@ -140,7 +140,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bot.cpp" />
+    <ClCompile Include="Czlowiek.cpp" />
+    <ClCompile Include="Gra.cpp" />
+    <ClCompile Include="Gracz.cpp" />
     <ClCompile Include="Poker.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Bot.h" />
+    <ClInclude Include="Czlowiek.h" />
+    <ClInclude Include="Gra.h" />
+    <ClInclude Include="Gracz.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
