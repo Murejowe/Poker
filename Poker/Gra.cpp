@@ -1,7 +1,6 @@
 #include "Gra.h"
 
 Gra::Gra() {
-    ResetTalia();
 }
 
 void Gra::ResetTalia() {
