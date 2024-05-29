@@ -9,7 +9,7 @@ int Czlowiek::Podbij_stawke(){
 		cin >> input;
 	}
 	stawka = input;
-	kapital = -input;
+	kapital =- input;
 	return input;
 }
 void Czlowiek::Pasuj() {
