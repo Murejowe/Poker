@@ -6,6 +6,9 @@
 #include "Gra.h"
 using namespace std;
 
+int sprawdzam(int x) {
+    return (x < 1 || x > 3) ? 0 : 1;
+};
 
 int main() {
     try {
@@ -17,7 +20,7 @@ int main() {
             int liczba_graczy;
             cout << "Podaj liczbę graczy (1-3): " << endl;
             cin >> liczba_graczy;
-            while (gra.sprawdzam(liczba_graczy) == 0) {
+            while (sprawdzam(liczba_graczy) == 0) {
                 cout << "Wprowadzono niepoprawną wartość! " << endl << "Podaj liczbę graczy (1-3): " << endl;
                 cin >> liczba_graczy;
             }

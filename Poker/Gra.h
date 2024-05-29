@@ -9,6 +9,8 @@
 #include "Bot.h"
 using namespace std;
 
+int sprawdzam(int x);
+
 class Gra
 {
 	protected:
@@ -23,14 +25,15 @@ class Gra
 	    string stol[5];
 	    int pula;
 	    void RozdajKarty(vector<Gracz*>& gracze);
-	    int SetDealer();
+	    void SetDealer(int numer_rundy);
 	    void RozpocznijRunde();
 	    void OdkryjStol();
 	    void WinnerFinder();
 	    void ResetTalia();
 		void TworzGraczy(int liczba_graczy);
-		int sprawdzam(int x);
+		int numer_rundy = 1;
 		Gra();
 	private:
+		vector<Gracz*> gracze;
 };
 

@@ -4,20 +4,13 @@ Gra::Gra() {
     ResetTalia();
 }
 
-int Gra::sprawdzam(int x) {
-    return (x < 1 || x > 3) ? 0 : 1;
-};
 void Gra::ResetTalia() {
     talia = initial_talia;
     unsigned seed = chrono::system_clock::now().time_since_epoch().count();
     shuffle(talia.begin(), talia.end(), default_random_engine(seed));
 }
 void Gra::RozdajKarty(vector<Gracz*>& gracze) {
-    if (talia.size() < gracze.size() * 2) {
-        cout << "Not enough cards in the deck to deal!" << endl;
-        return;
-    }
-
+    ResetTalia();
     for (auto& gracz : gracze) {
         gracz->karty[0] = talia.back(); talia.pop_back();
         gracz->karty[1] = talia.back(); talia.pop_back();
@@ -52,7 +45,6 @@ void Gra::TworzGraczy(int liczba_graczy) {
     }
     vector<Bot> listabotow;
     Czlowiek czlowiek(0, kapital, placeholder, 0, 0, "");
-    vector<Gracz*> gracze;
     gracze.push_back(&czlowiek);
     for (int i = 0; i < liczba_graczy; i++) {
         Bot bot(i + 1, kapital, placeholder, 0, 0, "status", list[i]);
@@ -62,8 +54,7 @@ void Gra::TworzGraczy(int liczba_graczy) {
     for (auto& bot : listabotow) {
         gracze.push_back(&bot);
     }
-    ResetTalia();
-    RozdajKarty(gracze);
+    RozpocznijRunde();
     cout << "Czlowiek Karty: " << czlowiek.karty[0] << " i " << czlowiek.karty[1] << endl;
     for (const auto& bot : listabotow) {
         cout << "Bot ID: " << bot.id << endl;
@@ -77,4 +68,20 @@ void Gra::TworzGraczy(int liczba_graczy) {
     for (int i = 0; i < 5; i++) {
         cout << stol[i] << endl;
     }
+}
+void Gra::RozpocznijRunde(){
+    SetDealer(numer_rundy);
+    RozdajKarty(gracze);
+};
+
+void Gra::SetDealer(int y) {
+    for (auto& gracz : gracze) {
+        if (gracz->id == y-1) {
+            gracz->dealer == 1;
+        }
+        else {
+            gracz->dealer == 0;
+        }
+    }
+    numer_rundy =+ 1;
 }
