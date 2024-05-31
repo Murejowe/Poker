@@ -8,9 +8,9 @@ class Czlowiek :
 {
 public:
     Czlowiek(int id, int kapital, string karty[2], int stawka, bool dealer, string status);
-    int Podbij_stawke() override;
-    void Pasuj() override;
-    void Check() override;
-    void Ruch_Czlowieka();
+    int Podbij_stawke(int max_stawka) override;
+    int Pasuj() override;
+    int Check() override;
+    int Ruch_Czlowieka(int max_stawka) override;
 };
 

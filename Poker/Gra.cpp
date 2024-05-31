@@ -53,7 +53,7 @@ void Gra::TworzGraczy(int liczba_graczy) {
     for (auto& bot : listabotow) {
         gracze.push_back(&bot);
     }
-    RozpocznijRunde();
+    RozdajKarty(gracze);
     cout << "Czlowiek Karty: " << czlowiek.karty[0] << " i " << czlowiek.karty[1] << endl;
     for (const auto& bot : listabotow) {
         cout << "Bot ID: " << bot.id << endl;
@@ -64,23 +64,100 @@ void Gra::TworzGraczy(int liczba_graczy) {
         cout << "Status: " << bot.status << endl;
         cout << "Poziom Trudnosci: " << bot.poziom_trudnosci << endl << endl;
     }
+    for (auto& gracz : gracze) {
+        cout << gracz->karty[0] << " " << gracz->karty[1] << endl;
+    }
     for (int i = 0; i < 5; i++) {
         cout << stol[i] << endl;
     }
+    RozpocznijRunde();
 }
 void Gra::RozpocznijRunde(){
-    SetDealer(numer_rundy);
+    for (auto& gracz : gracze) {
+        if (gracz->kapital != 0) {
+            tempGracze.push_back(gracz);
+        }
+    }
+    for (auto& gracz : tempGracze) {
+        cout << gracz->karty[0] << " " << gracz->karty[1] << endl;
+    }
+    cout << tempGracze.size() << endl;
+    if (tempGracze.size() == 1) {
+        cout << "Gratulacje! Wygra³eœ" << endl;
+        return;
+    }
+    int DealerIndex = SetDealer(numer_rundy);
     RozdajKarty(gracze);
+    for (auto& gracz : tempGracze) {
+        gracz->status = "active"; 
+    }
+    for (int i = 0; i < 3; i++) {
+        max_stawka = 0;
+        while (SprawdzajStatus()) {
+            for (int i = 0; i <= tempGracze.size(); i++) {
+                int id_gracza = (DealerIndex + i) % tempGracze.size();
+                if (id_gracza == 0) {
+                    int tempStawka = tempGracze[id_gracza]->Ruch_Czlowieka(max_stawka);
+                    if (tempStawka > max_stawka) {
+                        max_stawka = tempStawka;
+                    }
+                }
+                else{
+                    int tempStawka = tempGracze[id_gracza]->Ruch_Bota(max_stawka);
+                    if (tempStawka > max_stawka) {
+                        max_stawka = tempStawka;
+                    }
+                }
+            }
+        }
+        if (i == 0) {
+            cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << endl;
+        }
+        if (i == 1) {
+            cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << ", " << stol[3] << endl;
+        }
+        if (i == 2) {
+            cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << ", " << stol[3] << ", " << stol[4] << endl;
+        }
+    }
+    WinnerFinder();
 };
 
-void Gra::SetDealer(int y) {
-    for (auto& gracz : gracze) {
-        if (gracz->id == y-1) {
-            gracz->dealer == 1;
+int Gra::SetDealer(int y) {
+    int DealerIndex = (y - 1) % (tempGracze.size());
+    for (auto& gracz : tempGracze) {
+        if (gracz->id == DealerIndex) {
+            gracz->dealer = 1;
         }
         else {
-            gracz->dealer == 0;
+            gracz->dealer = 0;
         }
     }
     numer_rundy =+ 1;
+    return DealerIndex;
+}
+
+bool Gra::SprawdzajStatus(){
+    int temp = 0;
+    for (auto& gracz : tempGracze) {
+        if (gracz->status == "check" || gracz->status == "pass") {
+            temp++;
+        }
+    }
+    if (temp == tempGracze.size()) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+void Gra::WinnerFinder() {
+    gracze[0]->kapital += pula;
+    gracze[1]->kapital = 0;
+    gracze[2]->kapital = 0;
+    gracze[3]->kapital = 0;
+    for (auto& gracz : gracze) {
+        gracz->stawka = 0;
+    }
 }

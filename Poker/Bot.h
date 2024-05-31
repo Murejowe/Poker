@@ -9,9 +9,9 @@ class Bot :
     public:
     int poziom_trudnosci;
     Bot(int id, int kapital, string karty[2], int stawka, bool dealer, string status, int poziom_trudnosci);
-    int Podbij_stawke() override;
-    void Pasuj() override;
-    void Check() override;
-    void Ruch_Bota(int poziom_trudnosci);
+    int Podbij_stawke(int max_stawka) override;
+    int Pasuj() override;
+    int Check() override;
+    int Ruch_Bota(int max_stawka) override;
 };
 
