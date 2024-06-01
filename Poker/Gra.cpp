@@ -73,37 +73,48 @@ void Gra::TworzGraczy(int liczba_graczy) {
     }
     RozpocznijRunde();
 }
-void Gra::RozpocznijRunde(){
+void Gra::RozpocznijRunde() {
+    tempGracze.clear();  // Ensure tempGracze is empty before starting
+
     for (auto& gracz : gracze) {
         if (gracz->kapital != 0) {
             tempGracze.push_back(gracz);
         }
     }
-    for (auto& gracz : tempGracze) {
-        cout << gracz->karty[0] << " " << gracz->karty[1] << endl;
-    }
-    cout << tempGracze.size() << endl;
+
+    cout << "Liczba graczy: " << tempGracze.size() << endl;
+
     if (tempGracze.size() == 1) {
         cout << "Gratulacje! Wygra³eœ" << endl;
         return;
     }
+
     int DealerIndex = SetDealer(numer_rundy);
-    RozdajKarty(gracze);
+
     for (auto& gracz : tempGracze) {
         gracz->status = "active"; 
     }
+
     for (int i = 0; i < 3; i++) {
         max_stawka = 0;
+
         while (SprawdzajStatus()) {
-            for (int i = 0; i <= tempGracze.size(); i++) {
-                int id_gracza = (DealerIndex + i) % tempGracze.size();
+            for (int j = 0; j < tempGracze.size(); j++) {
+                int id_gracza = (DealerIndex + j) % tempGracze.size();
+
                 if (id_gracza == 0) {
                     int tempStawka = tempGracze[id_gracza]->Ruch_Czlowieka(max_stawka);
+                    
+                    // Deal new cards after the human player makes their move
+                    RozdajKarty(tempGracze);
+
+                    // Display the new cards for the human player
+                    cout << "Twoje nowe karty: " << tempGracze[id_gracza]->karty[0] << " i " << tempGracze[id_gracza]->karty[1] << endl;
+                    
                     if (tempStawka > max_stawka) {
                         max_stawka = tempStawka;
                     }
-                }
-                else{
+                } else {
                     int tempStawka = tempGracze[id_gracza]->Ruch_Bota(max_stawka);
                     if (tempStawka > max_stawka) {
                         max_stawka = tempStawka;
@@ -111,6 +122,7 @@ void Gra::RozpocznijRunde(){
                 }
             }
         }
+
         if (i == 0) {
             cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << endl;
         }
@@ -121,8 +133,15 @@ void Gra::RozpocznijRunde(){
             cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << ", " << stol[3] << ", " << stol[4] << endl;
         }
     }
+
     WinnerFinder();
-};
+}
+
+
+
+
+
+
 
 int Gra::SetDealer(int y) {
     int DealerIndex = (y - 1) % (tempGracze.size());
@@ -154,11 +173,25 @@ bool Gra::SprawdzajStatus(){
 }
 
 void Gra::WinnerFinder() {
-    gracze[0]->kapital += pula;
-    gracze[1]->kapital = 0;
-    gracze[2]->kapital = 0;
-    gracze[3]->kapital = 0;
+    Gracz* zwyciezca = nullptr;
+    int max_kapital = -1;
+
     for (auto& gracz : gracze) {
-        gracz->stawka = 0;
+        if (gracz->kapital > max_kapital) {
+            max_kapital = gracz->kapital;
+            zwyciezca = gracz;
+        }
+        gracz->stawka = 0; // Reset each player's stake
+    }
+
+    if (zwyciezca != nullptr) {
+        if (zwyciezca->id == 0) {
+            cout << "Zwyciezca rundy to: Czlowiek" << endl;
+        }
+        else {
+            cout << "Zwyciezca rundy to: Bot ID: " << zwyciezca->id << endl;
+        }
+        cout << "Kapital zwyciezcy: " << zwyciezca->kapital << endl;
     }
 }
+
