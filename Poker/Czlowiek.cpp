@@ -1,24 +1,30 @@
 #include "Czlowiek.h"
 Czlowiek::Czlowiek(int id, int kapital, string karty[2], int stawka, bool dealer, string status) : Gracz(id, kapital, karty, stawka, dealer, status) {}
-int Czlowiek::Podbij_stawke(){
+int Czlowiek::Podbij_stawke(int max_stawka){
 	int input;
 	cout << "Twoje saldo wynosi: " << kapital << endl << "Jak¹ kwotê chcesz postawiæ?" << endl;
 	cin >> input;
 	while (input > kapital) {
-		cout << "Wprowadzono niepoprawn¹ wartoœæ! " << endl << "Jak¹ kwotê chcesz postawiæ?" << endl;
+		cout << "Nie masz tyle na koncie! " << endl << "Jak¹ kwotê chcesz postawiæ?" << endl;
+		cin >> input;
+	}
+	while (input < max_stawka) {
+		cout << "Nie mo¿esz podbiæ stawki o tê wartoœæ!  " << endl << "Jak¹ kwotê chcesz postawiæ?" << endl;
 		cin >> input;
 	}
 	stawka = input;
-	kapital =- input;
+	kapital -= input;
 	return input;
 }
-void Czlowiek::Pasuj() {
+int Czlowiek::Pasuj() {
 	status == "pass";
+	return 0;
 }
-void Czlowiek::Check() {
+int Czlowiek::Check() {
 	status == "check";
+	return 0;
 }
-void Czlowiek::Ruch_Czlowieka() {
+int Czlowiek::Ruch_Czlowieka(int max_stawka) {
 	cout << "Jaki ruch chcesz wykonaæ?" << endl << "1) Podbij stawkê" << endl << "2) Spasuj" << endl << "3) Check" << endl;
 	int input;
 	cin >> input;
@@ -27,12 +33,12 @@ void Czlowiek::Ruch_Czlowieka() {
 		cin >> input;
 	}
 	if (input == 1) {
-		Podbij_stawke();
+		return Podbij_stawke(max_stawka);
 	}
 	if (input == 2) {
-		Pasuj();
+		return Pasuj();
 	}
 	if (input == 3) {
-		Check();
+		return Check();
 	}
 }
