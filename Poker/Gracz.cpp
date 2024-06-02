@@ -9,7 +9,7 @@ int Gracz::Podbij_stawke(int max_stawka) {
 int Gracz::Pasuj() {
     return 0;
 }
-int Gracz::Check() {
+int Gracz::Check(int max_stawka) {
     return 0;
 }
 int Gracz::Ruch_Czlowieka(int max_stawka) {

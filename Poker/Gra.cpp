@@ -73,39 +73,65 @@ void Gra::TworzGraczy(int liczba_graczy) {
     RozpocznijRunde();
 }
 void Gra::RozpocznijRunde(){
+    tempGracze.clear();
+    pula = 0;
     for (auto& gracz : gracze) {
-        if (gracz->kapital != 0) {
+        if (gracz->kapital > 0) {
             tempGracze.push_back(gracz);
         }
     }
-    for (auto& gracz : tempGracze) {
+    /*for (auto& gracz : tempGracze) {
         cout << gracz->karty[0] << " " << gracz->karty[1] << endl;
-    }
+    }*/
     cout << tempGracze.size() << endl;
-    if (tempGracze.size() == 1) {
-        cout << "Gratulacje! Wygra³eœ" << endl;
-        return;
-    }
     int DealerIndex = SetDealer(numer_rundy);
     RozdajKarty(gracze);
     for (auto& gracz : tempGracze) {
-        gracz->status = "active"; 
+        gracz->status = "active";
     }
-    for (int i = 0; i < 3; i++) {
-        max_stawka = 0;
+    max_stawka = 0;
+    for (int i = 0; i < 4; i++) {
+        if (tempGracze.size() == 1) {
+            cout << "Gratulacje! Wygra³eœ" << endl;
+            return;
+        }
+        for (auto& gracz : tempGracze) {
+            if (gracz->status != "all in") {
+                gracz->status = "active";
+            }
+        }
         while (SprawdzajStatus()) {
-            for (int i = 0; i <= tempGracze.size(); i++) {
-                int id_gracza = (DealerIndex + i) % tempGracze.size();
+            /*for (auto& gracz : tempGracze) {
+                gracz->status = "active";
+            }*/
+            for (int j = 0; j <= tempGracze.size(); j++) {
+                int id_gracza = (DealerIndex + j) % tempGracze.size();
                 if (id_gracza == 0) {
-                    int tempStawka = tempGracze[id_gracza]->Ruch_Czlowieka(max_stawka);
-                    if (tempStawka > max_stawka) {
-                        max_stawka = tempStawka;
+                    if (tempGracze[id_gracza]->status == "all in") {
+                        continue;
                     }
+                    else {
+                        tempGracze[id_gracza]->status = "active";
+                        int poprzednia_stawka = tempGracze[id_gracza]->stawka;
+                        int tempStawka = tempGracze[id_gracza]->Ruch_Czlowieka(max_stawka);
+                        if (tempStawka > max_stawka) {
+                            max_stawka = tempStawka;
+                        }
+                        pula += tempStawka - poprzednia_stawka;
+                    }  
                 }
                 else{
-                    int tempStawka = tempGracze[id_gracza]->Ruch_Bota(max_stawka);
-                    if (tempStawka > max_stawka) {
-                        max_stawka = tempStawka;
+                    if (tempGracze[id_gracza]->status == "all in") {
+                        continue;
+                    }
+                    else {
+                        tempGracze[id_gracza]->status = "active";
+                        int poprzednia_stawka = tempGracze[id_gracza]->stawka;
+                        int tempStawka = tempGracze[id_gracza]->Ruch_Bota(max_stawka);
+                        if (tempStawka > max_stawka) {
+                            max_stawka = tempStawka;
+                        }
+                        pula += tempStawka - poprzednia_stawka;
                     }
                 }
             }
@@ -119,8 +145,12 @@ void Gra::RozpocznijRunde(){
         if (i == 2) {
             cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << ", " << stol[3] << ", " << stol[4] << endl;
         }
+        if (i == 3) {
+            WinnerFinder();
+            numer_rundy++;
+            RozpocznijRunde();
+        }
     }
-    WinnerFinder();
 };
 
 int Gra::SetDealer(int y) {
@@ -133,14 +163,13 @@ int Gra::SetDealer(int y) {
             gracz->dealer = 0;
         }
     }
-    numer_rundy =+ 1;
     return DealerIndex;
 }
 
 bool Gra::SprawdzajStatus(){
     int temp = 0;
     for (auto& gracz : tempGracze) {
-        if (gracz->status == "check" || gracz->status == "pass") {
+        if (gracz->status == "check" || gracz->status == "pass" || gracz->status == "all in") {
             temp++;
         }
     }
@@ -154,9 +183,6 @@ bool Gra::SprawdzajStatus(){
 
 void Gra::WinnerFinder() {
     gracze[0]->kapital += pula;
-    gracze[1]->kapital = 0;
-    gracze[2]->kapital = 0;
-    gracze[3]->kapital = 0;
     for (auto& gracz : gracze) {
         gracz->stawka = 0;
     }

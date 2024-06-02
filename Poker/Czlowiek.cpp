@@ -12,17 +12,37 @@ int Czlowiek::Podbij_stawke(int max_stawka){
 		cout << "Nie mo¿esz podbiæ stawki o tê wartoœæ!  " << endl << "Jak¹ kwotê chcesz postawiæ?" << endl;
 		cin >> input;
 	}
+	if (input == kapital) {
+		status = "all in";
+		cout << "All in!" << endl;
+	}
 	stawka = input;
 	kapital -= input;
 	return input;
 }
 int Czlowiek::Pasuj() {
-	status == "pass";
+	status = "pass";
 	return 0;
 }
-int Czlowiek::Check() {
-	status == "check";
-	return 0;
+int Czlowiek::Check(int max_stawka) {
+	if (max_stawka > stawka) {
+		if (max_stawka - stawka >= kapital) {
+			stawka += kapital;
+			kapital = 0;
+			status = "all in";
+			return stawka;
+		}
+		else {
+			kapital -= max_stawka - stawka;
+			stawka = max_stawka;
+			status = "check";
+			return stawka;
+		}
+	}
+	else {
+		status = "check";
+		return stawka;
+	}
 }
 int Czlowiek::Ruch_Czlowieka(int max_stawka) {
 	cout << "Jaki ruch chcesz wykonaæ?" << endl << "1) Podbij stawkê" << endl << "2) Spasuj" << endl << "3) Check" << endl;
@@ -39,6 +59,12 @@ int Czlowiek::Ruch_Czlowieka(int max_stawka) {
 		return Pasuj();
 	}
 	if (input == 3) {
-		return Check();
+		if (max_stawka == 0) {
+			cout << "Musisz postawiæ wejœciówkê! " << endl;
+			return Ruch_Czlowieka(max_stawka);
+		}
+		else {
+			return Check(max_stawka);
+		}
 	}
 }
