@@ -1,4 +1,5 @@
 #pragma once
+#include <map>
 #include <vector>
 #include <iostream>
 #include <random>   
@@ -38,5 +39,30 @@ class Gra
 	private:
 		vector<Gracz*> gracze;
 		vector<Gracz*> tempGracze;
+		enum PokerHandRank {
+			HIGH_CARD,
+			ONE_PAIR,
+			TWO_PAIR,
+			THREE_OF_A_KIND,
+			STRAIGHT,
+			FLUSH,
+			FULL_HOUSE,
+			FOUR_OF_A_KIND,
+			STRAIGHT_FLUSH
+		};
+		vector<string> nazwy_kombinacji = { "Wysoka karta", "Jedna para", "Dwie pary", "Trójka", "Strit", "Kolor", "Ful", "Czwórka", "Poker" };
+		map<string, int> cardRankValues = {
+	{"2", 2}, {"3", 3}, {"4", 4}, {"5", 5},
+	{"6", 6}, {"7", 7}, {"8", 8}, {"9", 9},
+	{"10", 10}, {"Walet", 11}, {"Dama", 12}, {"Król", 13}, {"As", 14}
+		};
+		// Define a function to check if all cards have the same suit
+		bool IsFlush(const vector<string>& cards);
+
+		// Define a function to check if cards form a straight
+		bool IsStraight(const vector<string>& cards);
+
+		// Define a function to evaluate the poker hand
+		PokerHandRank EvaluatePokerHand(const vector<string>& cards);
 };
 
