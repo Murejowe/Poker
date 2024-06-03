@@ -76,6 +76,8 @@ void Gra::RozpocznijRunde(){
     cout << tempGracze.size() << endl;
     int DealerIndex = SetDealer(numer_rundy);
     RozdajKarty(gracze);
+    Gracz* winner = nullptr;
+    PokerHandRank winnerRank = HIGH_CARD;
     for (auto& gracz : gracze) {
         // Combine player's cards with community cards (stol)
         vector<string> allCards;
@@ -89,10 +91,43 @@ void Gra::RozpocznijRunde(){
         // Evaluate the poker hand
         PokerHandRank rank = EvaluatePokerHand(allCards);
         cout << "kombinacja gracza o id: " << gracz->id << " jest równa: " << nazwy_kombinacji[rank] << endl;
+        if (rank > winnerRank) {
+            kandydaci.clear();
+            kandydaci.push_back(gracz);
+            winnerRank = rank;
+        }
+        if (rank == winnerRank) {
+            kandydaci.push_back(gracz);
+        }
     }
+    if (kandydaci.size() == 1) {
+        winner = kandydaci[0];
+        if (winner != nullptr) {
+            cout << "Zwyciezca rundy to gracz o indexie: " << winner->id << endl;
+            cout << "Ranking pokerowy: " << winnerRank << endl;
+        }
+    }
+    else{
+       vector<Gracz*> lista_winnerów = DrawResolver(kandydaci);
+       if (lista_winnerów.size() == 1) {
+           winner = lista_winnerów[0];
+           cout << "Zwyciezca rundy to gracz o indexie: " << winner->id << endl;
+           cout << "Ranking pokerowy: " << winnerRank << endl;
+       }
+       else {
+           cout << "Remis! Zwyciężają gracze o indexach: ";
+           for (auto& x : lista_winnerów) {
+               cout << x->id << " ";
+           }
+           cout << endl;
+           cout << "Ranking pokerowy: " << winnerRank << endl;
+       }
+    }
+    
     for (auto& gracz : tempGracze) {
         gracz->status = "active";
     }
+
     max_stawka = 0;
     //for (int i = 0; i < 4; i++) {
     //    if (tempGracze.size() == 1) {
@@ -194,18 +229,20 @@ void Gra::WinnerFinder() {
 
 bool Gra::IsFlush(const vector<string>& cards) {
     // Odczytaj kolor pierwszej karty
-    string firstCard = cards[0];
-    string suit = firstCard.substr(firstCard.find(' ') + 1);
-
+    string kolor[4] = { "Kier","Karo","Trefl", "Pik" };
     // Sprawdź, czy wszystkie pozostałe karty mają ten sam kolor
-    for (int i = 1; i < cards.size(); ++i) {
-        string currentCard = cards[i];
-        string currentSuit = currentCard.substr(currentCard.find(' ') + 1);
-        if (currentSuit != suit) {
-            return false;
+    for (int j = 0; j < 4; j++) {
+        int kolor_licznik = 0;
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards[i].substr(cards[i].find(' ') + 1) == kolor[j]) {
+                kolor_licznik++;
+            }
+        }
+        if (kolor_licznik == 5) {
+            return true;
         }
     }
-    return true;
+    return false;
 }
 
 bool Gra::IsStraight(const vector<string>& cards) {
@@ -222,12 +259,21 @@ bool Gra::IsStraight(const vector<string>& cards) {
     sort(cardValues.begin(), cardValues.end());
 
     // Sprawdź, czy karty tworzą ciąg wartości
-    for (int i = 1; i < cardValues.size(); ++i) {
-        if (cardValues[i] != cardValues[i - 1] + 1) {
-            return false;
+    int strit_licznik = 0;
+    for (int i = 0; i < cardValues.size()-1; i++){
+        if (cardValues[i]+1 == cardValues[i+1]) {
+            strit_licznik++;
+        }
+        else {
+            strit_licznik = 0;
         }
     }
-    return true;
+    if (strit_licznik == 5) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
 Gra::PokerHandRank Gra::EvaluatePokerHand(const vector<string>& cards) {
@@ -299,4 +345,76 @@ Gra::PokerHandRank Gra::EvaluatePokerHand(const vector<string>& cards) {
     else {
         return HIGH_CARD;
     }
+}
+
+vector<Gracz*> Gra::DrawResolver(vector<Gracz*>& gracze){
+    vector<Gracz*> winner;
+    vector<int> max_karty;
+    PokerHandRank DrawRank = HIGH_CARD;
+    for (auto& gracz : gracze) {
+        // Combine player's cards with community cards (stol)
+        vector<string> allCards;
+        allCards.push_back(gracz->karty[0]);
+        allCards.push_back(gracz->karty[1]);
+        allCards.insert(allCards.end(), stol, stol + 5);
+        // Evaluate the poker hand
+        PokerHandRank rank = EvaluatePokerHand(allCards);
+        DrawRank = rank;
+    }
+    vector <vector<string>> kandydaci_karty;
+    vector <vector<int>> kandydaci_karty_int;
+    for (auto& kandydat : gracze) {
+        vector<string> allCards;
+        allCards.push_back(kandydat->karty[0]);
+        allCards.push_back(kandydat->karty[1]);
+        allCards.insert(allCards.end(), stol, stol + 5);
+        kandydaci_karty.push_back(allCards);
+    }
+    for (auto& kandydat : kandydaci_karty) {
+        vector<int> allCards_int;
+        allCards_int.clear();
+        for (auto& karta : kandydat) {
+            string value = karta.substr(0, karta.find(' '));
+            allCards_int.push_back(cardRankValues[value]);
+        }
+        kandydaci_karty_int.push_back(allCards_int);
+    }
+    for (auto& kandydat : kandydaci_karty_int) {
+        sort(kandydat.begin(), kandydat.end(), greater<int>());
+    }
+    if (DrawRank == STRAIGHT || DrawRank == STRAIGHT_FLUSH || DrawRank == FLUSH) {
+        for (auto& kandydat : kandydaci_karty_int) {
+            max_karty.push_back(kandydat[0]);
+        }
+        auto max_it = max_element(max_karty.begin(), max_karty.end());
+        int max_value = *max_it;
+        int count_max = count(max_karty.begin(), max_karty.end(), max_value);
+        if (count_max == 1) {
+            int licznik = 0;
+            for (auto& karta : max_karty) {
+                if (karta == max_value) {
+                    int winner_id = licznik;
+                    break;
+                }
+                else {
+                    licznik++;
+                }
+            }
+            winner.push_back(gracze[licznik]);
+            return winner;
+        }
+        else {
+            int licznik = 0;
+            for (auto& karta : max_karty) {
+                if (karta == max_value) {
+                    winner.push_back(gracze[licznik]);
+                }
+                else {
+                    licznik++;
+                }
+            }
+            return winner;
+        }
+    }
+
 }

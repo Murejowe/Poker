@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <string>
 #include <vector>
 #include <iostream>
 #include <random>   
@@ -39,6 +40,8 @@ class Gra
 	private:
 		vector<Gracz*> gracze;
 		vector<Gracz*> tempGracze;
+		vector<Gracz*> kandydaci;
+		vector<string> allCards;
 		enum PokerHandRank {
 			HIGH_CARD,
 			ONE_PAIR,
@@ -64,5 +67,6 @@ class Gra
 
 		// Define a function to evaluate the poker hand
 		PokerHandRank EvaluatePokerHand(const vector<string>& cards);
+		vector<Gracz*> DrawResolver(vector<Gracz*>& gracze);
 };
 
