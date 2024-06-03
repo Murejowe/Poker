@@ -6,6 +6,7 @@ int Bot::Podbij_stawke(int max_stawka) {
 	if (kapital == 0) {
 		status = "all in";
 	}
+	cout << "Bot Podbija stawkê do: " << stawka << endl;
 	return 20;
 }
 int Bot::Pasuj() {
@@ -37,7 +38,6 @@ int Bot::Check(int max_stawka) {
 }
 int Bot::Ruch_Bota(int max_stawka) {
 	if (max_stawka == 0) {
-		cout << "Bot Podbija stawkê" << endl;
 		return Podbij_stawke(max_stawka);
 	}
 	else {

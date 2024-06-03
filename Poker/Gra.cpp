@@ -54,16 +54,6 @@ void Gra::TworzGraczy(int liczba_graczy) {
         gracze.push_back(&bot);
     }
     RozdajKarty(gracze);
-    /*cout << "Czlowiek Karty: " << czlowiek.karty[0] << " i " << czlowiek.karty[1] << endl;
-    for (const auto& bot : listabotow) {
-        cout << "Bot ID: " << bot.id << endl;
-        cout << "Kapital: " << bot.kapital << endl;
-        cout << "Karty: " << bot.karty[0] << " i " << bot.karty[1] << endl;
-        cout << "Stawka: " << bot.stawka << endl;
-        cout << "Dealer: " << bot.dealer << endl;
-        cout << "Status: " << bot.status << endl;
-        cout << "Poziom Trudnosci: " << bot.poziom_trudnosci << endl << endl;
-    }*/
     for (auto& gracz : gracze) {
         cout << gracz->karty[0] << " " << gracz->karty[1] << endl;
     }
@@ -100,10 +90,10 @@ void Gra::RozpocznijRunde(){
         PokerHandRank rank = EvaluatePokerHand(allCards);
         cout << "kombinacja gracza o id: " << gracz->id << " jest równa: " << nazwy_kombinacji[rank] << endl;
     }
-    //for (auto& gracz : tempGracze) {
-    //    gracz->status = "active";
-    //}
-    //max_stawka = 0;
+    for (auto& gracz : tempGracze) {
+        gracz->status = "active";
+    }
+    max_stawka = 0;
     //for (int i = 0; i < 4; i++) {
     //    if (tempGracze.size() == 1) {
     //        cout << "Gratulacje! Wygrałeś" << endl;
