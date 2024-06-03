@@ -42,6 +42,7 @@ class Gra
 		vector<Gracz*> tempGracze;
 		vector<Gracz*> kandydaci;
 		vector<string> allCards;
+		vector<Gracz*> lista_winnerów;
 		enum PokerHandRank {
 			HIGH_CARD,
 			ONE_PAIR,
@@ -55,15 +56,20 @@ class Gra
 		};
 		vector<string> nazwy_kombinacji = { "Wysoka karta", "Jedna para", "Dwie pary", "Trójka", "Strit", "Kolor", "Ful", "Czwórka", "Poker" };
 		map<string, int> cardRankValues = {
-	{"2", 2}, {"3", 3}, {"4", 4}, {"5", 5},
-	{"6", 6}, {"7", 7}, {"8", 8}, {"9", 9},
-	{"10", 10}, {"Walet", 11}, {"Dama", 12}, {"Król", 13}, {"As", 14}
+		{"2", 2}, {"3", 3}, {"4", 4}, {"5", 5},
+		{"6", 6}, {"7", 7}, {"8", 8}, {"9", 9},
+		{"10", 10}, {"Walet", 11}, {"Dama", 12}, {"Król", 13}, {"As", 14}
 		};
+
 		// Define a function to check if all cards have the same suit
 		bool IsFlush(const vector<string>& cards);
 
 		// Define a function to check if cards form a straight
 		bool IsStraight(const vector<string>& cards);
+
+		int maxFlush(const vector<string>& cards);
+
+		int maxStraight(const vector<string>& cards);
 
 		// Define a function to evaluate the poker hand
 		PokerHandRank EvaluatePokerHand(const vector<string>& cards);
