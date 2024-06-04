@@ -7,10 +7,14 @@ class Czlowiek :
     public Gracz
 {
     public:
+        // Konstrukt
         Czlowiek(int id, int kapital, string karty[2], int stawka, bool dealer, string status);
-    private: 
+    private:
+        // Metoda do podbijania stawki przez gracza cz³owieka
         int Podbij_stawke(int max_stawka) override;
+        // Metoda do sprawdzania przez gracza cz³owieka
         int Check(int max_stawka) override;
+        // Metoda do wykonania ruchu przez gracza cz³owieka
         int Ruch_Czlowieka(int max_stawka) override;
 };
 
