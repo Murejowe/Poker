@@ -181,7 +181,7 @@ bool Gra::SprawdzajStatus(){
 }
 
 void Gra::WinnerFinder() {
-    lista_winnerów.clear();
+    lista_winnerow.clear();
     kandydaci.clear();
     Gracz* winner = nullptr;
     PokerHandRank winnerRank = HIGH_CARD;
@@ -214,39 +214,37 @@ void Gra::WinnerFinder() {
         if (winner != nullptr) {
             cout << "Zwyciezca rundy to gracz o indexie: " << winner->id << endl;
             cout << "Zwycięzka kombinacja: " << nazwy_kombinacji[winnerRank] << endl;
-            lista_winnerów.push_back(winner);
+            lista_winnerow.push_back(winner);
         }
     }
     else {
-        lista_winnerów = DrawResolver(kandydaci);
-        if (lista_winnerów.size() == 1) {
-            winner = lista_winnerów[0];
+        lista_winnerow = DrawResolver(kandydaci);
+        if (lista_winnerow.size() == 1) {
+            winner = lista_winnerow[0];
             cout << "Zwyciezca rundy to gracz o indexie: " << winner->id << endl;
             cout << "Zwycięzka kombinacja: " << nazwy_kombinacji[winnerRank] << endl;
         }
         else {
             cout << "Remis! Zwyciężają gracze o indexach: ";
-            for (auto& x : lista_winnerów) {
+            for (auto& x : lista_winnerow) {
                 cout << x->id << " ";
             }
             cout << endl;
             cout << "Zwycięzka kombinacja: " << nazwy_kombinacji[winnerRank] << endl;
         }
     }
-    div_t wygrana = div(pula, lista_winnerów.size());
+    div_t wygrana = div(pula, lista_winnerow.size());
     for (auto& gracz : gracze) {
         gracz->stawka = 0;
     }
-    for (auto& zwyciezcy : lista_winnerów) {
+    for (auto& zwyciezcy : lista_winnerow) {
         zwyciezcy->kapital += wygrana.quot;
     }
     cout << "Koniec rundy nr: " << numer_rundy << endl;
 }
 
 bool Gra::IsFlush(const vector<string>& cards) {
-    // Odczytaj kolor pierwszej karty
     string kolor[4] = {"Kier","Karo","Trefl", "Pik"};
-    // Sprawdź, czy wszystkie pozostałe karty mają ten sam kolor
     for (int j = 0; j < 4; j++) {
         int kolor_licznik = 0;
         for (int i = 0; i < cards.size(); i++) {
@@ -262,17 +260,12 @@ bool Gra::IsFlush(const vector<string>& cards) {
 }
 
 bool Gra::IsStraight(const vector<string>& cards) {
-    // Konwertuj wartości kart na liczby
     vector<int> cardValues;
     for (const auto& card : cards) {
         string value = card.substr(0, card.find(' '));
         cardValues.push_back(cardRankValues[value]);
     }
-
-    // Posortuj karty
     sort(cardValues.begin(), cardValues.end());
-
-    // Sprawdź, czy karty tworzą ciąg wartości
     int strit_licznik = 1;
     for (int i = 0; i < cardValues.size()-1; i++){
         if (cardValues[i]+1 == cardValues[i+1]) {
@@ -300,7 +293,6 @@ int Gra::maxFlush(const vector<string>& cards) {
         cardValues.push_back(cardRankValues[value]);
     }
     string kolor[4] = { "Kier","Karo","Trefl", "Pik" };
-    // Sprawdź, czy wszystkie pozostałe karty mają ten sam kolor
     for (int j = 0; j < 4; j++) {
         int maxFlush = 0;
         int kolor_licznik = 0;
@@ -322,11 +314,7 @@ int Gra::maxStraight(const vector<string>& cards) {
         string value = card.substr(0, card.find(' '));
         cardValues.push_back(cardRankValues[value]);
     }
-
-    // Posortuj karty
     sort(cardValues.begin(), cardValues.end());
-
-    // Sprawdź, czy karty tworzą ciąg wartości
     int maxStraight = 0;
     int strit_licznik = 1;
     for (int i = 0; i < cardValues.size() - 1; i++) {
@@ -346,13 +334,8 @@ int Gra::maxStraight(const vector<string>& cards) {
 }
 
 Gra::PokerHandRank Gra::EvaluatePokerHand(const vector<string>& cards) {
-    // Sprawdź, czy wszystkie karty mają ten sam kolor
     bool flush = IsFlush(cards);
-
-    // Sprawdź, czy karty tworzą strita
     bool straight = IsStraight(cards);
-
-    // Wartości kart
     vector<int> cardValues;
     for (const auto& card : cards) {
         string value = card.substr(0, card.find(' '));
@@ -360,11 +343,7 @@ Gra::PokerHandRank Gra::EvaluatePokerHand(const vector<string>& cards) {
             cardValues.push_back(cardRankValues[value]);
         }
     }
-
-    // Posortuj wartości kart
     sort(cardValues.begin(), cardValues.end());
-
-    // Sprawdź, czy występują pary, trójki itp.
     map<int, int> valueCount;
     for (int value : cardValues) {
         valueCount[value]++;
@@ -386,7 +365,6 @@ Gra::PokerHandRank Gra::EvaluatePokerHand(const vector<string>& cards) {
         }
     }
 
-    // Określ wynik na podstawie kombinacji kart
     if (straight && flush) {
         return STRAIGHT_FLUSH;
     }
@@ -421,12 +399,10 @@ vector<Gracz*> Gra::DrawResolver(vector<Gracz*>& gracze){
     vector<int> max_karty;
     PokerHandRank DrawRank = HIGH_CARD;
     for (auto& gracz : gracze) {
-        // Combine player's cards with community cards (stol)
         vector<string> allCards;
         allCards.push_back(gracz->karty[0]);
         allCards.push_back(gracz->karty[1]);
         allCards.insert(allCards.end(), stol, stol + 5);
-        // Evaluate the poker hand
         PokerHandRank rank = EvaluatePokerHand(allCards);
         DrawRank = rank;
     }

@@ -7,7 +7,7 @@ class Czlowiek :
     public Gracz
 {
     public:
-        // Konstrukt
+        // Konstruktor klasy Czlowiek
         Czlowiek(int id, int kapital, string karty[2], int stawka, bool dealer, string status);
     private:
         // Metoda do podbijania stawki przez gracza cz³owieka

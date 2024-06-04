@@ -11,9 +11,9 @@ using namespace std;
 class Bot :
     public Gracz
 {
-    // Konstruktor klasy Bot
+    
 public:
-    // Konstrukt
+    // Konstruktor klasy Bot
     Bot(int id, int kapital, string karty[2], int stawka, bool dealer, string status, int poziom_trudnosci);
 
 private:
@@ -36,7 +36,7 @@ private:
     // Funkcja obliczaj¹ca punkty za ci¹g kart
     int Straightpoints(vector<string> karty);
 
-    // Funkcja obliczaj¹ca punkty za flush kart
+    // Funkcja obliczaj¹ca punkty za kolor kart
     int Flushpoints(vector<string> karty);
 
     // Funkcja obliczaj¹ca punkty za pary kart

@@ -11,17 +11,16 @@
 #include "Bot.h"
 using namespace std;
 
-// Funkcja sprawdzaj¹ca, czy gracz wygra³
+// Funkcja wspomagaj¹ca wprowadzanie poprawnych danych
 int sprawdzam(int x);
 
 class Gra
 {
 public:
-    // Wektor przechowuj¹cy karty na stole
-    // Ka¿da karta jest reprezentowana jako string (np. "As Karo")
+    // Wektor przechowuj¹cy odkryte karty na stole
     vector<string> aktualny_stol;
 
-    // Stawka pieniêdzy
+    // Pula pieniêdzy do wygrania
     int pula;
 
     // Funkcja tworz¹ca graczy
@@ -37,10 +36,10 @@ public:
     Gra();
 
 private:
-    // Funkcja sprawdzaj¹ca, czy gra siê skoñczy³a
+    // Funkcja sprawdzaj¹ca statusy graczy
     bool SprawdzajStatus();
 
-    // Funkcja rozdaj¹c¹ karty graczom
+    // Funkcja rozdaj¹c¹ karty graczom i sto³owi
     void RozdajKarty(vector<Gracz*>& gracze);
 
     // Funkcja ustawiaj¹ca dealera na rundê
@@ -55,7 +54,7 @@ private:
     // Funkcja resetuj¹ca talie
     void ResetTalia();
 
-    // Tablica 2D przechowuj¹ca karty na stole
+    // Tablica przechowuj¹ca wszystkie karty na stole
     string stol[5];
 
     // pocz¹tkowa talia kart (wstêpnie przypisane)
@@ -66,7 +65,7 @@ private:
         "As Pik", "2 Pik", "3 Pik", "4 Pik", "5 Pik", "6 Pik", "7 Pik", "8 Pik", "9 Pik", "10 Pik", "Walet Pik", "Dama Pik", "Krl Pik"
     };
 
-    // Wektor przechowuj¹cy bie¿¹c¹ taliê kart
+    // Wektor przechowuj¹cy potasowan¹ taliê
     vector<string> talia;
 
     // Wektor przechowuj¹cy graczy
@@ -75,14 +74,14 @@ private:
     // Wektor tymczasowy przechowuj¹cy graczy podczas operacji gry
     vector<Gracz*> tempGracze;
 
-    // Wektor przechowuj¹cy graczy, którzy wygrali grê
+    // Wektor przechowuj¹cy graczy, którzy mog¹ by zwyciêzcami
     vector<Gracz*> kandydaci;
 
-    // Wektor przechowuj¹cy wszystkie karty w grze
+    // Wektor przechowuj¹cy karty z rêki gracza i karty na stole
     vector<string> allCards;
 
     // Wektor przechowuj¹cy zwyciêzców gry
-    vector<Gracz*> lista_winnerw;
+    vector<Gracz*> lista_winnerow;
 
     // Enum dla rankingów r¹k w pokerze (np. HIGH_CARD, STRAIGHT_FLUSH)
     enum PokerHandRank {
@@ -91,7 +90,7 @@ private:
         TWO_PAIR,
         THREE_OF_A_KIND,
         STRAIGHT,
-        FLUSH,
+        FLUSH, 
         FULL_HOUSE,
         FOUR_OF_A_KIND,
         STRAIGHT_FLUSH
@@ -107,10 +106,10 @@ private:
         {"10", 10}, {"Walet", 11}, {"Dama", 12}, {"Król", 13}, {"As", 14}
     };
 
-    // Funkcja sprawdzaj¹ca, czy wszystkie karty maj¹ tê sam¹ barwê (prawda, jeœli tak)
+    // Funkcja sprawdzaj¹ca, czy gracz ma kombinacjê Kolor (prawda, jeœli tak)
     bool IsFlush(const vector<string>& cards);
 
-    // Funkcja sprawdzaj¹ca, czy karty tworz¹ ci¹g (prawda, jeœli tworz¹)
+    // Funkcja sprawdzaj¹ca, czy gracz ma kombinacje Strit (prawda, jeœli tworz¹)
     bool IsStraight(const vector<string>& cards);
 
     // Funkcja znajduj¹ca maksymalny flush w zestawie kart
@@ -122,6 +121,6 @@ private:
     // Funkcja oceniaj¹ca rêkê w pokerze (zwraca enum value PokerHandRank)
     PokerHandRank EvaluatePokerHand(const vector<string>& cards);
 
-    // Funkcja rozwi¹zywaj¹ca narysowania (kiedy dwóch graczy ma tê sam¹ rêkê)
+    // Funkcja rozwi¹zywaj¹ca remisy (kiedy dwóch graczy ma tê sam¹ rêkê)
     vector<Gracz*> DrawResolver(vector<Gracz*>& gracze);
 };

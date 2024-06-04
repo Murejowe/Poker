@@ -18,6 +18,6 @@ class Gracz
     protected:
         virtual int Podbij_stawke(int max_stawka); // Wirtualna metoda podbijania stawki
         virtual int Check(int max_stawka); // Metoda wirtualna do sprawdzenia przez gracza
-        int Pasuj();// Metoda wirtualna do pasowania przez gracza
+        int Pasuj(); // Metoda do pasowania przez graczy
 };
 
