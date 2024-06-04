@@ -16,7 +16,7 @@ int Czlowiek::Podbij_stawke(int max_stawka){
 		status = "all in";
 		cout << "All in!" << endl;
 	}
-	stawka = input;
+	stawka += input;
 	kapital -= input;
 	return input;
 }

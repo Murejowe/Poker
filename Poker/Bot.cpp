@@ -66,21 +66,14 @@ int Bot::Ruch_Bota(int max_stawka, vector<string> aktualny_stol) {
 				Check(max_stawka);
 			}
 			else {
-				if (ceil((kapital * 0.2) * poziom_trudnosci) >= kapital) {
-					stawka = kapital;
-					kapital -= stawka;
-					status = "all in";
-					cout << "Bot " << id << " Check All in!" << endl;
-					return stawka;
-				}
-				if (max_stawka == ceil((kapital * 0.2) * poziom_trudnosci)) {
+				if (max_stawka + ceil((kapital * 0.2) * poziom_trudnosci) >= kapital || ceil((kapital * 0.2) * poziom_trudnosci) + stawka <= max_stawka) {
 					Check(max_stawka);
 				}
 				else {
 					stawka += ceil((kapital * 0.2) * poziom_trudnosci);
-					kapital -= stawka;
+					kapital -= ceil((kapital * 0.2) * poziom_trudnosci);
 					status = "check";
-					cout << "Bot " << id << " Podbija stawkê do: " << stawka << endl;
+					cout << "Bot " << id << " Podbija stawkê do: " <<  stawka << endl;
 					return stawka;
 				}
 			}
@@ -92,21 +85,14 @@ int Bot::Ruch_Bota(int max_stawka, vector<string> aktualny_stol) {
 				Check(max_stawka);
 			}
 			else {
-				if (ceil((kapital * 0.2) * poziom_trudnosci) >= kapital) {
-					stawka = kapital;
-					kapital -= stawka;
-					status = "all in";
-					cout << "Bot " << id << " Check All in!" << endl;
-					return stawka;
-				}
-				if (max_stawka == ceil((kapital * 0.2) * poziom_trudnosci)) {
+				if (max_stawka + ceil((kapital * 0.2) * poziom_trudnosci) >= kapital || ceil((kapital * 0.2) * poziom_trudnosci) + stawka <= max_stawka) {
 					Check(max_stawka);
 				}
 				else {
 					stawka += ceil((kapital * 0.2) * poziom_trudnosci);
-					kapital -= stawka;
+					kapital -= ceil((kapital * 0.2) * poziom_trudnosci);
 					status = "check";
-					cout << "Bot " << id << " Podbija stawkê do: " << stawka << endl;
+					cout << "Bot " << id << " Podbija stawkê do: " <<  stawka << endl;
 					return stawka;
 				}
 			}

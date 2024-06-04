@@ -32,9 +32,6 @@ void Gra::TworzGraczy(int liczba_graczy) {
         }
         list.push_back(temp);
     }
-    for (const auto& element : list) {
-        cout << element << endl;
-    }
     int kapital;
     cout << "Podaj kapitał początkowy każdego gracza (min. 100): " << endl;
     cin >> kapital;
@@ -75,12 +72,6 @@ void Gra::RozpocznijRunde(){
     cout << "Runda numer: " << numer_rundy <<endl;
     int DealerIndex = SetDealer(numer_rundy);
     RozdajKarty(tempGracze);
-    for (auto& gracz : gracze) {
-        cout << gracz->karty[0] << " " << gracz->karty[1] << endl;
-    }
-    for (int i = 0; i < 5; i++) {
-        cout << stol[i] << endl;
-    }
     for (auto& gracz : tempGracze) {
         gracz->status = "active";
     }
@@ -95,6 +86,7 @@ void Gra::RozpocznijRunde(){
             for (int j = 0; j <= tempGracze.size(); j++) {
                 int id_gracza = (DealerIndex + j) % tempGracze.size();
                 if (id_gracza == 0) {
+                    cout << "Twoje karty to: " << tempGracze[0]->karty[0] << " " << tempGracze[0]->karty[1] << endl;
                     if (tempGracze[id_gracza]->status == "all in" || tempGracze[id_gracza]->status == "pass") {
                         continue;
                     }
@@ -110,7 +102,9 @@ void Gra::RozpocznijRunde(){
                                 }
                             }
                         }
-                        pula += tempStawka - poprzednia_stawka;
+                        if (tempStawka - poprzednia_stawka >= 0) {
+                            pula += tempStawka - poprzednia_stawka;
+                        }
                     }  
                 }
                 else{
@@ -129,7 +123,9 @@ void Gra::RozpocznijRunde(){
                                 }
                             }
                         }
-                        pula += tempStawka - poprzednia_stawka;
+                        if (tempStawka - poprzednia_stawka >= 0) {
+                            pula += tempStawka - poprzednia_stawka;
+                        }
                     }
                 }
             }
