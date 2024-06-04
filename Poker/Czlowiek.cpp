@@ -20,10 +20,6 @@ int Czlowiek::Podbij_stawke(int max_stawka){
 	kapital -= input;
 	return input;
 }
-int Czlowiek::Pasuj() {
-	status = "pass";
-	return 0;
-}
 int Czlowiek::Check(int max_stawka) {
 	if (max_stawka > stawka) {
 		if (max_stawka - stawka >= kapital) {

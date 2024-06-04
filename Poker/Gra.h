@@ -25,11 +25,11 @@ class Gra
 	    };
 	public:
 	    string stol[5];
+		vector<string> aktualny_stol;
 	    int pula;
 	    void RozdajKarty(vector<Gracz*>& gracze);
 	    int SetDealer(int numer_rundy);
 	    void RozpocznijRunde();
-	    void OdkryjStol();
 	    void WinnerFinder();
 	    void ResetTalia();
 		void TworzGraczy(int liczba_graczy);

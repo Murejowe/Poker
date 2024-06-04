@@ -56,6 +56,7 @@ void Gra::TworzGraczy(int liczba_graczy) {
     RozpocznijRunde();
 }
 void Gra::RozpocznijRunde(){
+    aktualny_stol.clear();
     tempGracze.clear();
     pula = 0;
     for (auto& gracz : gracze) {
@@ -63,9 +64,17 @@ void Gra::RozpocznijRunde(){
             tempGracze.push_back(gracz);
         }
     }
-    cout << tempGracze.size() << endl;
+    if (tempGracze[0]->id != 0) {
+        cout << "Przegrałeś! Game Over!" << endl;
+        return;
+    }
+    if (tempGracze.size() == 1) {
+        cout << "Gratulacje! Wygrałeś" << endl;
+        return;
+    }
+    cout << "Runda numer: " << numer_rundy <<endl;
     int DealerIndex = SetDealer(numer_rundy);
-    RozdajKarty(gracze);
+    RozdajKarty(tempGracze);
     for (auto& gracz : gracze) {
         cout << gracz->karty[0] << " " << gracz->karty[1] << endl;
     }
@@ -77,16 +86,8 @@ void Gra::RozpocznijRunde(){
     }
     max_stawka = 0;
     for (int i = 0; i < 4; i++) {
-        if (tempGracze[0]->id != 0) {
-            cout << "Przegrałeś! Game Over!" << endl;
-            return;
-        }
-        if (tempGracze.size() == 1) {
-            cout << "Gratulacje! Wygrałeś" << endl;
-            return;
-        }
         for (auto& gracz : tempGracze) {
-            if (gracz->status != "all in") {
+            if (gracz->status == "check") {
                 gracz->status = "active";
             }
         }
@@ -94,7 +95,7 @@ void Gra::RozpocznijRunde(){
             for (int j = 0; j <= tempGracze.size(); j++) {
                 int id_gracza = (DealerIndex + j) % tempGracze.size();
                 if (id_gracza == 0) {
-                    if (tempGracze[id_gracza]->status == "all in") {
+                    if (tempGracze[id_gracza]->status == "all in" || tempGracze[id_gracza]->status == "pass") {
                         continue;
                     }
                     else {
@@ -103,20 +104,30 @@ void Gra::RozpocznijRunde(){
                         int tempStawka = tempGracze[id_gracza]->Ruch_Czlowieka(max_stawka);
                         if (tempStawka > max_stawka) {
                             max_stawka = tempStawka;
+                            for (auto& gracz : tempGracze) {
+                                if (gracz->status == "check") {
+                                    gracz->status = "active";
+                                }
+                            }
                         }
                         pula += tempStawka - poprzednia_stawka;
                     }  
                 }
                 else{
-                    if (tempGracze[id_gracza]->status == "all in") {
+                    if (tempGracze[id_gracza]->status == "all in" || tempGracze[id_gracza]->status == "pass") {
                         continue;
                     }
                     else {
                         tempGracze[id_gracza]->status = "active";
                         int poprzednia_stawka = tempGracze[id_gracza]->stawka;
-                        int tempStawka = tempGracze[id_gracza]->Ruch_Bota(max_stawka);
+                        int tempStawka = tempGracze[id_gracza]->Ruch_Bota(max_stawka, aktualny_stol);
                         if (tempStawka > max_stawka) {
                             max_stawka = tempStawka;
+                            for (auto& gracz : tempGracze) {
+                                if (gracz->status == "check") {
+                                    gracz->status = "active";
+                                }
+                            }
                         }
                         pula += tempStawka - poprzednia_stawka;
                     }
@@ -125,12 +136,17 @@ void Gra::RozpocznijRunde(){
         }
         if (i == 0) {
             cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << endl;
+            aktualny_stol.push_back(stol[0]);
+            aktualny_stol.push_back(stol[1]);
+            aktualny_stol.push_back(stol[2]);
         }
         if (i == 1) {
             cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << ", " << stol[3] << endl;
+            aktualny_stol.push_back(stol[3]);
         }
         if (i == 2) {
             cout << "Karty na stole to: " << stol[0] << ", " << stol[1] << ", " << stol[2] << ", " << stol[3] << ", " << stol[4] << endl;
+            aktualny_stol.push_back(stol[4]);
         }
         if (i == 3) {
             WinnerFinder();
@@ -170,13 +186,18 @@ bool Gra::SprawdzajStatus(){
 
 void Gra::WinnerFinder() {
     lista_winnerów.clear();
+    kandydaci.clear();
     Gracz* winner = nullptr;
     PokerHandRank winnerRank = HIGH_CARD;
     for (auto& gracz : gracze) {
+        if (gracz->status == "pass") {
+            continue;
+        }
         vector<string> allCards;
         allCards.push_back(gracz->karty[0]);
         allCards.push_back(gracz->karty[1]);
         allCards.insert(allCards.end(), stol, stol + 5);
+        cout << endl;
         for (auto& karta : allCards) {
             cout << karta << " ";
         }
@@ -196,7 +217,7 @@ void Gra::WinnerFinder() {
         winner = kandydaci[0];
         if (winner != nullptr) {
             cout << "Zwyciezca rundy to gracz o indexie: " << winner->id << endl;
-            cout << "Ranking pokerowy: " << winnerRank << endl;
+            cout << "Zwycięzka kombinacja: " << nazwy_kombinacji[winnerRank] << endl;
             lista_winnerów.push_back(winner);
         }
     }
@@ -205,7 +226,7 @@ void Gra::WinnerFinder() {
         if (lista_winnerów.size() == 1) {
             winner = lista_winnerów[0];
             cout << "Zwyciezca rundy to gracz o indexie: " << winner->id << endl;
-            cout << "Ranking pokerowy: " << winnerRank << endl;
+            cout << "Zwycięzka kombinacja: " << nazwy_kombinacji[winnerRank] << endl;
         }
         else {
             cout << "Remis! Zwyciężają gracze o indexach: ";
@@ -213,7 +234,7 @@ void Gra::WinnerFinder() {
                 cout << x->id << " ";
             }
             cout << endl;
-            cout << "Ranking pokerowy: " << winnerRank << endl;
+            cout << "Zwycięzka kombinacja: " << nazwy_kombinacji[winnerRank] << endl;
         }
     }
     div_t wygrana = div(pula, lista_winnerów.size());
@@ -223,6 +244,7 @@ void Gra::WinnerFinder() {
     for (auto& zwyciezcy : lista_winnerów) {
         zwyciezcy->kapital += wygrana.quot;
     }
+    cout << "Koniec rundy nr: " << numer_rundy << endl;
 }
 
 bool Gra::IsFlush(const vector<string>& cards) {
@@ -289,7 +311,7 @@ int Gra::maxFlush(const vector<string>& cards) {
         for (int i = 0; i < cards.size(); i++) {
             if (cards[i].substr(cards[i].find(' ') + 1) == kolor[j]) {
                 kolor_licznik++;
-                maxFlush = cardValues[i + 1];
+                maxFlush = cardValues[i];
             }
         }
         if (kolor_licznik >= 5) {
